@@ -1,4 +1,4 @@
-import { readFile, writeFile } from "./index.js";
+import { readFile, writeFile } from "./helper.js";
 
 // Number of matches played per year for all the years in IPL.
 function numberOfMatchesPlayed(data) {

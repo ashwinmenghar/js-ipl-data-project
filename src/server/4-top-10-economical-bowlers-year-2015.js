@@ -1,4 +1,4 @@
-import { readFile, writeFile } from "./index.js";
+import { readFile, writeFile } from "./helper.js";
 
 // Top 10 economical bowlers in the year 2015
 const top10EconomicalBowlersInYear2015 = (matches, deliveries) => {

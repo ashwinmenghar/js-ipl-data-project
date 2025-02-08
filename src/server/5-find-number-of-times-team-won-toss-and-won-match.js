@@ -1,4 +1,4 @@
-import { readFile, writeFile } from "./index.js";
+import { readFile, writeFile } from "./helper.js";
 
 // Find the number of times each team won the toss and also won the match
 const getNumberOfTeamWonTossAndMatch = (matches) => {

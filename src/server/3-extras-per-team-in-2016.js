@@ -1,4 +1,4 @@
-import { readFile, writeFile } from "./index.js";
+import { readFile, writeFile } from "./helper.js";
 
 const extrasPerTeamIn2016 = (matchData, deliveryData) => {
   const matchIds = matchData.reduce((acc, match) => {

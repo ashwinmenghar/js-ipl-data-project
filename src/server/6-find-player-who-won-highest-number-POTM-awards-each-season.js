@@ -1,4 +1,4 @@
-import { readFile, writeFile } from "./index.js";
+import { readFile, writeFile } from "./helper.js";
 // Find a player who has won the highest number of Player of the Match awards for each season
 
 const getPlayerWonHighestNumberPOTMAward = (matches) => {

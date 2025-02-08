@@ -1,4 +1,4 @@
-import { readFile, writeFile } from "./index.js";
+import { readFile, writeFile } from "./helper.js";
 
 // Number of matches won per team per year in IPL.
 const yearwiseMatchesWonPerTeam = (data) => {

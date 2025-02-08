@@ -1,29 +1,4 @@
-import { readFile, writeFile } from "./index.js";
-/**
- * {
-    "match_id": "61",
-    "inning": "1",
-    "batting_team": "Chennai Super Kings",
-    "bowling_team": "Kings XI Punjab",
-    "over": "3",
-    "ball": "2",
-    "batsman": "ML Hayden",
-    "non_striker": "PA Patel",
-    "bowler": "B Lee",
-    "is_super_over": "0",
-    "wide_runs": "0",
-    "bye_runs": "0",
-    "legbye_runs": "0",
-    "noball_runs": "1",
-    "penalty_runs": "0",
-    "batsman_runs": "4",
-    "extra_runs": "1",
-    "total_runs": "5",
-    "player_dismissed": "",
-    "dismissal_kind": "",
-    "fielder": ""
-  },
- */
+import { readFile, writeFile } from "./helper.js";
 
 // Find the strike rate of a batsman for each season
 const findStrikeRateOfAPlayer = (matches, deliveries) => {

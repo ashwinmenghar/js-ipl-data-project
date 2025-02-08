@@ -1,4 +1,4 @@
-import { readFile, writeFile } from "./index.js";
+import { readFile, writeFile } from "./helper.js";
 
 // Find the highest number of times one player has been dismissed by another player
 const findHighestNumberDismissed = (deliveries) => {
