@@ -8,7 +8,7 @@ function numberOfMatchesPlayed(data) {
     return acc;
   }, {});
 
-  writeFile(res, "../public/output/1-matches-per-year.json");
+  writeFile(res, "1-matches-per-year.json");
 }
 
 readFile("../data/matches.json", (err, result) => {
