@@ -1,4 +1,29 @@
 import { readFile, writeFile } from "./index.js";
+/**
+ * {
+    "match_id": "61",
+    "inning": "1",
+    "batting_team": "Chennai Super Kings",
+    "bowling_team": "Kings XI Punjab",
+    "over": "3",
+    "ball": "2",
+    "batsman": "ML Hayden",
+    "non_striker": "PA Patel",
+    "bowler": "B Lee",
+    "is_super_over": "0",
+    "wide_runs": "0",
+    "bye_runs": "0",
+    "legbye_runs": "0",
+    "noball_runs": "1",
+    "penalty_runs": "0",
+    "batsman_runs": "4",
+    "extra_runs": "1",
+    "total_runs": "5",
+    "player_dismissed": "",
+    "dismissal_kind": "",
+    "fielder": ""
+  },
+ */
 
 // Find the strike rate of a batsman for each season
 const findStrikeRateOfAPlayer = (matches, deliveries) => {
@@ -11,6 +36,7 @@ const findStrikeRateOfAPlayer = (matches, deliveries) => {
     const batsman = delivery.batsman;
     const batsman_runs = Number(delivery.batsman_runs);
     const extra_runs = delivery.extra_runs;
+    const wideRuns = Number(delivery.wide_runs);
 
     if (!result[season]) {
       result[season] = {};
@@ -20,7 +46,7 @@ const findStrikeRateOfAPlayer = (matches, deliveries) => {
       result[season][batsman] = { balls: 0, runs: 0 };
     }
 
-    if (extra_runs == "0") result[season][batsman].balls++;
+    if (wideRuns === 0) result[season][batsman].balls++;
     result[season][batsman].runs += batsman_runs;
 
     return result;
