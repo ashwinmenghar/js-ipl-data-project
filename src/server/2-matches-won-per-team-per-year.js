@@ -1,23 +1,20 @@
-import { readFile, writeFile } from "./helper.js";
-
 // Number of matches won per team per year in IPL.
-const yearwiseMatchesWonPerTeam = (data) => {
-  const result = data.reduce((acc, curr) => {
-    // if (curr.result == "no result") return acc;
+const getAllIPLWonMatchesForSeason = (matches) => {
+  return matches.reduce((seasonWins, match) => {
+    const { season, winner } = match;
+    if (!season || !winner) return seasonWins;
 
-    if (!acc[curr.season]) {
-      acc[curr.season] = {};
+    if (!seasonWins[season]) {
+      seasonWins[season] = {};
     }
-    if (!acc[curr.season][curr.winner]) {
-      acc[curr.season][curr.winner] = 0;
+
+    if (!seasonWins[season][winner]) {
+      seasonWins[season][winner] = 0;
     }
-    acc[curr.season][curr.winner]++;
-    return acc;
+
+    seasonWins[season][winner]++;
+    return seasonWins;
   }, {});
-
-  writeFile(result, "2-matches-won-per-team-per-year.json");
 };
 
-readFile("../data/matches.json", (err, result) => {
-  yearwiseMatchesWonPerTeam(result);
-});
+export default getAllIPLWonMatchesForSeason;

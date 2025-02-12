@@ -1,25 +1,27 @@
 import fs from "fs";
 
 const writeFile = (data, fileName) => {
-  fs.writeFile(
-    "../public/output/" + fileName,
-    JSON.stringify(data, null, 2),
-    { encoding: "utf8" },
-    (err) => {
-      if (err) console.log(err.message);
-      else console.log("File written successfully\n");
-    }
-  );
+  console.log(fileName);
+
+  try {
+    fs.writeFileSync(
+      "./src/public/output/" + fileName,
+      JSON.stringify(data, null, 2),
+      { encoding: "utf8" }
+    );
+    console.log("File written successfully\n");
+  } catch (error) {
+    console.log(error.message);
+  }
 };
 
 const readFile = (filePath, cb) => {
-  fs.readFile(filePath, "utf8", (err, data) => {
-    if (err) {
-      cb(err, null);
-    } else {
-      cb(null, JSON.parse(data));
-    }
-  });
+  try {
+    const result = fs.readFileSync(filePath, "utf8");
+    return JSON.parse(result);
+  } catch (error) {
+    console.log(err);
+  }
 };
 
 export { writeFile, readFile };

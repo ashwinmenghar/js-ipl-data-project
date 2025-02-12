@@ -1,20 +1,25 @@
-import { readFile, writeFile } from "./helper.js";
+// import { readFile, writeFile } from "./helper.js";
 
 // Number of matches played per year for all the years in IPL.
-function numberOfMatchesPlayed(data) {
-  const res = data.reduce((acc, curr) => {
+// readFile("../data/matches.json", (err, result) => {
+//   if (err) {
+//     console.log("Error reading file:", err.message);
+//   } else {
+//     // numberOfMatchesPlayed(result);
+//     console.log(result);
+//   }
+// });
+
+const numberOfMatchesPlayed = (data) => {
+  return data.reduce((acc, curr) => {
     if (acc[curr.season] === undefined) acc[curr.season] = 1;
     else acc[curr.season]++;
     return acc;
   }, {});
+};
 
-  writeFile(res, "1-matches-per-year.json");
-}
+// console.log(numberOfMatchesPlayed);
 
-readFile("../data/matches.json", (err, result) => {
-  if (err) {
-    console.log("Error reading file:", err.message);
-  } else {
-    numberOfMatchesPlayed(result);
-  }
-});
+// writeFile(numberOfMatchesPlayed, "1-matches-per-year.json");
+
+export default numberOfMatchesPlayed;
