@@ -24,4 +24,10 @@ const readFile = (filePath, cb) => {
   }
 };
 
-export { writeFile, readFile };
+const getMatchesId = (matches, season) => {
+  return new Set(
+    matches.filter((match) => match.season == season).map((match) => match.id)
+  );
+};
+
+export { writeFile, readFile, getMatchesId };

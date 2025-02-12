@@ -1,8 +1,4 @@
-const getMatchesId = (matches, season) => {
-  return new Set(
-    matches.filter((match) => match.season == season).map((match) => match.id)
-  );
-};
+import { getMatchesId } from "./helper.js";
 
 const getExtraRunsByTeamInaSeason = (matches, deliveries, season) => {
   const matchIds = getMatchesId(matches, season);
