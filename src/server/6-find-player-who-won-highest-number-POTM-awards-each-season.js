@@ -1,47 +1,31 @@
-import { readFile, writeFile } from "./helper.js";
 // Find a player who has won the highest number of Player of the Match awards for each season
+const getHighestNumberPOTMAwardForSeason = (matches) => {
+  const seasonWisePlayers = matches.reduce((playersWonPOTMAward, curr) => {
+    if (!playersWonPOTMAward[curr.season])
+      playersWonPOTMAward[curr.season] = {};
 
-const getPlayerWonHighestNumberPOTMAward = (matches) => {
-  const players = matches.reduce((acc, curr) => {
-    if (!acc[curr.season]) acc[curr.season] = {};
+    if (!playersWonPOTMAward[curr.season][curr.player_of_match])
+      playersWonPOTMAward[curr.season][curr.player_of_match] = 0;
 
-    if (!acc[curr.season][curr.player_of_match])
-      acc[curr.season][curr.player_of_match] = 0;
-
-    acc[curr.season][curr.player_of_match]++;
-    return acc;
+    playersWonPOTMAward[curr.season][curr.player_of_match]++;
+    return playersWonPOTMAward;
   }, {});
 
-  const maxPlayerOfTheMatchYearwise = Object.keys(players).reduce(
-    (acc, season) => {
-      const allPlayers = players[season];
-
-      let topPlayer = "";
-      let noOfPOTM = 0;
-
-      for (let key in allPlayers) {
-        if (allPlayers[key] > noOfPOTM) {
-          noOfPOTM = allPlayers[key];
-          topPlayer = key;
-        }
-      }
-      acc[season] = topPlayer;
-      return acc;
-    },
-    {}
-  );
-
-  writeFile(
-    maxPlayerOfTheMatchYearwise,
-    "6-find-player-who-won-highest-number-POTM-awards-each-season.json"
-  );
+  return getTopPOTMWinnerPerSeason(seasonWisePlayers);
 };
 
-readFile("../data/matches.json", (err, matches) => {
-  if (err) {
-    console.error("Error reading matches.json", err);
-    return;
-  }
+const getTopPOTMWinnerPerSeason = (players) => {
+  return Object.keys(players).reduce((acc, season) => {
+    acc[season] = findTopPlayer(players[season]);
+    return acc;
+  }, {});
+};
 
-  getPlayerWonHighestNumberPOTMAward(matches);
-});
+const findTopPlayer = (seasonPlayers) => {
+  return Object.entries(seasonPlayers).reduce(
+    (top, [player, awards]) => (awards > top.awards ? { player, awards } : top),
+    { player: "", awards: 0 }
+  ).player;
+};
+
+export default getHighestNumberPOTMAwardForSeason;
