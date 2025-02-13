@@ -1,31 +1,38 @@
 // Find a player who has won the highest number of Player of the Match awards for each season
 const getHighestNumberPOTMAwardForSeason = (matches) => {
-  const seasonWisePlayers = matches.reduce((playersWonPOTMAward, curr) => {
-    if (!playersWonPOTMAward[curr.season])
-      playersWonPOTMAward[curr.season] = {};
+  const playersWonPOTMAward = {};
 
-    if (!playersWonPOTMAward[curr.season][curr.player_of_match])
-      playersWonPOTMAward[curr.season][curr.player_of_match] = 0;
+  for (let { season, player_of_match } of matches) {
+    if (!playersWonPOTMAward[season]) {
+      playersWonPOTMAward[season] = {};
+    }
+    playersWonPOTMAward[season][player_of_match] =
+      (playersWonPOTMAward[season][player_of_match] || 0) + 1;
+  }
 
-    playersWonPOTMAward[curr.season][curr.player_of_match]++;
-    return playersWonPOTMAward;
-  }, {});
-
-  return getTopPOTMWinnerPerSeason(seasonWisePlayers);
+  return getTopPOTMWinnerPerSeason(playersWonPOTMAward);
 };
 
 const getTopPOTMWinnerPerSeason = (players) => {
-  return Object.keys(players).reduce((acc, season) => {
-    acc[season] = findTopPlayer(players[season]);
-    return acc;
-  }, {});
+  let topPlayers = {};
+  for (let season of Object.keys(players)) {
+    topPlayers[season] = findTopPlayer(players[season]);
+  }
+  return topPlayers;
 };
 
 const findTopPlayer = (seasonPlayers) => {
-  return Object.entries(seasonPlayers).reduce(
-    (top, [player, awards]) => (awards > top.awards ? { player, awards } : top),
-    { player: "", awards: 0 }
-  ).player;
+  let result = { player: "", awards: 0 };
+
+  for (let playerAndAward of Object.entries(seasonPlayers)) {
+    const player = playerAndAward[0];
+    const awards = playerAndAward[1];
+
+    if (awards > result.awards) {
+      result = { player, awards };
+    }
+  }
+  return result.player;
 };
 
 export default getHighestNumberPOTMAwardForSeason;
