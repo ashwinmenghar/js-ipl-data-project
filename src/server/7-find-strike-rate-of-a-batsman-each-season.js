@@ -1,8 +1,6 @@
-import { readFile, writeFile } from "./helper.js";
-
 // Find the strike rate of a batsman for each season
-const findStrikeRateOfAPlayer = (matches, deliveries) => {
-  const matchSeasonMap = new Map(matches.map(({ id, season }) => [id, season]));
+const getStrikeRateOfBatsmanBySeason = (matches, deliveries) => {
+  const matchSeasonMap = getAllMatchIdInSeason(matches);
 
   const batsmanStats = deliveries.reduce((result, delivery) => {
     let season = matchSeasonMap.get(delivery.match_id);
@@ -10,7 +8,6 @@ const findStrikeRateOfAPlayer = (matches, deliveries) => {
 
     const batsman = delivery.batsman;
     const batsman_runs = Number(delivery.batsman_runs);
-    const extra_runs = delivery.extra_runs;
     const wideRuns = Number(delivery.wide_runs);
 
     if (!result[season]) {
@@ -27,41 +24,28 @@ const findStrikeRateOfAPlayer = (matches, deliveries) => {
     return result;
   }, {});
 
-  const formattedOutput = Object.entries(batsmanStats).reduce(
-    (getYearsWithPlayersStats, [season, seasonStats]) => {
-      getYearsWithPlayersStats[season] = Object.entries(seasonStats).reduce(
+  return calculateStrikeRates(batsmanStats);
+};
+
+const getAllMatchIdInSeason = (matches) => {
+  return new Map(matches.map(({ id, season }) => [id, season]));
+};
+
+const calculateStrikeRates = (batsmanStats) => {
+  return Object.entries(batsmanStats).reduce(
+    (yearsWithPlayerStats, [season, seasonStats]) => {
+      yearsWithPlayerStats[season] = Object.entries(seasonStats).reduce(
         (allPlayerStats, [batsman, { balls, runs }]) => {
           let strikeRate = (runs / balls) * 100;
           allPlayerStats[batsman] = strikeRate.toFixed(2);
-
           return allPlayerStats;
         },
         {}
       );
-
-      return getYearsWithPlayersStats;
+      return yearsWithPlayerStats;
     },
     {}
   );
-
-  writeFile(
-    formattedOutput,
-    "7-find-strike-rate-of-a-batsman-each-season.json"
-  );
 };
 
-readFile("../data/matches.json", (err, matchData) => {
-  if (err) {
-    console.error("Error reading matches.json", err);
-    return;
-  }
-
-  readFile("../data/deliveries.json", (err, deliveryData) => {
-    if (err) {
-      console.error("Error reading deliveries.json", err);
-      return;
-    }
-
-    findStrikeRateOfAPlayer(matchData, deliveryData);
-  });
-});
+export default getStrikeRateOfBatsmanBySeason;
