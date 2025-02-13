@@ -2,43 +2,44 @@ import { getMatchesId } from "./helper.js";
 
 // Top 10 economical bowlers in the year 2015
 const getTop10EconomicalBowlers = (matches, deliveries, season) => {
-  const matchesId = getMatchesId(matches, season);
+  const matchIdsForSeason = getMatchesId(matches, season);
+  const bowlerStats = {};
 
-  const bowlerStats = deliveries.reduce(
-    (
-      bowlerStats,
-      { match_id, bowler, wide_runs, noball_runs, batsman_runs }
-    ) => {
-      if (matchesId.has(match_id)) {
-        const isLegalDelivery = wide_runs === "0" && noball_runs === "0";
-        const runsGiven =
-          Number(wide_runs) + Number(noball_runs) + Number(batsman_runs);
+  for (let delivery of deliveries) {
+    const { match_id, bowler, wide_runs, noball_runs, batsman_runs } = delivery;
 
-        if (!bowlerStats[bowler])
-          bowlerStats[bowler] = { runsGiven: 0, ballsBowled: 0 };
+    if (matchIdsForSeason.has(match_id)) {
+      const isLegalDelivery = wide_runs === "0" && noball_runs === "0";
+      const runsConceded =
+        Number(wide_runs) + Number(noball_runs) + Number(batsman_runs);
 
-        bowlerStats[bowler].runsGiven += runsGiven;
-        if (isLegalDelivery) bowlerStats[bowler].ballsBowled++;
-      }
-      return bowlerStats;
-    },
-    {}
-  );
-  const formattedBowlersEco = formatBowlersEconomy(bowlerStats);
-  return formatEconomyRates(formattedBowlersEco);
+      if (!bowlerStats[bowler])
+        bowlerStats[bowler] = { runsConceded: 0, ballsBowled: 0 };
+
+      bowlerStats[bowler].runsConceded += runsConceded;
+      if (isLegalDelivery) bowlerStats[bowler].ballsBowled++;
+    }
+  }
+
+  const topBowlersByEconomy = calculateBowlersEconomy(bowlerStats);
+  return convertToEconomyMap(topBowlersByEconomy);
 };
 
-const formatBowlersEconomy = (bowlersArr) => {
-  return Object.entries(bowlersArr)
-    .map(([bowler, stats]) => ({
+const calculateBowlersEconomy = (bowlersArr) => {
+  let bowlersEconomyList = [];
+  for (let [bowler, stats] of Object.entries(bowlersArr)) {
+    let economy = ((stats.runsConceded / stats.ballsBowled) * 6).toFixed(2);
+
+    bowlersEconomyList.push({
       bowler,
-      economy: (stats.runsGiven / stats.ballsBowled) * 6,
-    }))
-    .sort((a, b) => a.economy - b.economy)
-    .slice(0, 10);
+      economy: Number(economy),
+    });
+  }
+
+  return bowlersEconomyList.sort((a, b) => a.economy - b.economy).slice(0, 10);
 };
 
-const formatEconomyRates = (bowlersArr) => {
+const convertToEconomyMap = (bowlersArr) => {
   return Object.fromEntries(
     bowlersArr.map(({ bowler, economy }) => [bowler, economy.toFixed(2)])
   );
