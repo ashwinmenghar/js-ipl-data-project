@@ -1,8 +1,10 @@
 // Number of matches won per team per year in IPL.
 const getAllIPLWonMatchesForSeason = (matches) => {
-  return matches.reduce((seasonWins, match) => {
+  let seasonWins = {};
+
+  for (let match of matches) {
     const { season, winner } = match;
-    if (!season || !winner) return seasonWins;
+    if (!season || !winner) continue;
 
     if (!seasonWins[season]) {
       seasonWins[season] = {};
@@ -11,10 +13,10 @@ const getAllIPLWonMatchesForSeason = (matches) => {
     if (!seasonWins[season][winner]) {
       seasonWins[season][winner] = 0;
     }
-
     seasonWins[season][winner]++;
-    return seasonWins;
-  }, {});
+  }
+
+  return seasonWins;
 };
 
 export default getAllIPLWonMatchesForSeason;
