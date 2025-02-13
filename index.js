@@ -12,6 +12,7 @@ import getHighestNumberPOTMAwardForSeason from "./src/server/6-find-player-who-w
 
 import getStrikeRateOfBatsmanBySeason from "./src/server/7-find-strike-rate-of-a-batsman-each-season.js";
 import getHighestNumberOfTimesDismissedPlayers from "./src/server/8-maximum-times-player-dismissed-by-a-bowler.js";
+import { getBestEconomyBowlerInSuperOvers } from "./src/server/9-bowler-best-economy-in-super-over.js";
 
 // Collecting all data
 const getNoOfMatchesPlayedByTeamInAllSeasons =
@@ -23,7 +24,6 @@ const top10EconomicalBowlers = getTop10EconomicalBowlers(
   deliveries,
   2015
 );
-
 const matchAndTossWonTeams = getAllTeamsWhoWonMatchAndToss(matches);
 const highestNumberOfPlayerOfMatchAwardBySeason =
   getHighestNumberPOTMAwardForSeason(matches);
@@ -32,9 +32,10 @@ const strikeRateOfBatsmanBySeason = getStrikeRateOfBatsmanBySeason(
   matches,
   deliveries
 );
-
 const highestNumberOfTimesDismissedPlayers =
   getHighestNumberOfTimesDismissedPlayers(deliveries);
+const bestEconomyBowlerInSuperOvers =
+  getBestEconomyBowlerInSuperOvers(deliveries);
 
 // Writing all data
 writeFile(getNoOfMatchesPlayedByTeamInAllSeasons, "1-matches-per-year.json");
@@ -56,4 +57,8 @@ writeFile(
 writeFile(
   highestNumberOfTimesDismissedPlayers,
   "8-maximum-times-player-dismissed-by-a-bowler.json"
+);
+writeFile(
+  bestEconomyBowlerInSuperOvers,
+  "9-bowler-best-economy-in-super-over.json"
 );

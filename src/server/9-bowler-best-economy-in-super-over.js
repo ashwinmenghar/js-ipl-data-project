@@ -1,16 +1,11 @@
-import { readFile, writeFile } from "./helper.js";
-
 // Find the bowler with the best economy in super overs
-const findBestEconomyInSuperOver = (deliveries) => {
-  let bowlersList = {};
 
-  for (let i = 0; i < deliveries.length; i++) {
-    if (deliveries[i].is_super_over == 1) {
-      let bowler = deliveries[i].bowler;
-      let wideRuns = deliveries[i].wide_runs;
-      let noBallRuns = deliveries[i].noball_runs;
-      let totalRuns = Number(deliveries[i].total_runs);
+const filterSuperOverDeliveries = (deliveries) =>
+  deliveries.filter(({ is_super_over }) => is_super_over == 1);
 
+const calculateBowlerStats = (superOverDeliveries) => {
+  return superOverDeliveries.reduce(
+    (bowlersList, { bowler, wide_runs, noball_runs, batsman_runs }) => {
       if (!bowlersList[bowler]) {
         bowlersList[bowler] = {
           totalRunsInSuperOver: 0,
@@ -18,45 +13,41 @@ const findBestEconomyInSuperOver = (deliveries) => {
         };
       }
 
-      bowlersList[bowler].totalRunsInSuperOver += totalRuns;
-      if (wideRuns == 0 && noBallRuns == 0) {
+      bowlersList[bowler].totalRunsInSuperOver +=
+        Number(wide_runs) + Number(noball_runs) + Number(batsman_runs);
+
+      if (wide_runs == 0 && noball_runs == 0) {
         bowlersList[bowler].totalBallsInSuperOver++;
       }
-    }
-  }
-  let bestEconomyBowlerName = "";
-  let bestEconomy = Number.MAX_SAFE_INTEGER;
 
-  for (let bowler in bowlersList) {
-    let bowlerData = bowlersList[bowler];
-
-    let totalBalls = bowlerData.totalBallsInSuperOver / 6;
-    let totalRuns = Number(bowlerData.totalRunsInSuperOver);
-
-    let totalEconomy = 0;
-    if (totalBalls > 0) {
-      totalEconomy = totalRuns / totalBalls;
-    }
-
-    if (totalEconomy < bestEconomy) {
-      bestEconomy = totalEconomy;
-      bestEconomyBowlerName = bowler;
-    }
-  }
-
-  let result = {
-    bowlerName: bestEconomyBowlerName,
-    economy: bestEconomy,
-  };
-
-  writeFile(result, "9-bowler-best-economy-in-super-over.json");
+      return bowlersList;
+    },
+    {}
+  );
 };
 
-readFile("../data/deliveries.json", (err, deliveries) => {
-  if (err) {
-    console.error("Error reading deliveries.json", err);
-    return;
-  }
+const findBestEconomyBowler = (bowlersList) => {
+  return Object.entries(bowlersList).reduce(
+    (best, [bowler, { totalRunsInSuperOver, totalBallsInSuperOver }]) => {
+      let totalOvers = totalBallsInSuperOver / 6;
+      let economy = Number.MAX_SAFE_INTEGER;
 
-  findBestEconomyInSuperOver(deliveries);
-});
+      if (totalOvers > 0) {
+        economy = totalRunsInSuperOver / totalOvers;
+      }
+
+      if (economy < best.economy) {
+        return { bowlerName: bowler, economy };
+      } else {
+        return best;
+      }
+    },
+    { bowlerName: "", economy: Number.MAX_SAFE_INTEGER }
+  );
+};
+
+export const getBestEconomyBowlerInSuperOvers = (deliveries) => {
+  const superOverDeliveries = filterSuperOverDeliveries(deliveries);
+  const bowlersList = calculateBowlerStats(superOverDeliveries);
+  return findBestEconomyBowler(bowlersList);
+};
