@@ -1,9 +1,11 @@
 const getNumberOfMatchesPlayed = (matches) => {
-  return matches.reduce((matchFreq, curr) => {
-    if (matchFreq[curr.season] === undefined) matchFreq[curr.season] = 1;
-    else matchFreq[curr.season]++;
-    return matchFreq;
-  }, {});
+  let matchFreq = {};
+
+  for (let match of matches) {
+    if (matchFreq[match.season] === undefined) matchFreq[match.season] = 1;
+    else matchFreq[match.season]++;
+  }
+  return matchFreq;
 };
 
 export default getNumberOfMatchesPlayed;
