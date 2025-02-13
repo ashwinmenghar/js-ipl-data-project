@@ -11,6 +11,7 @@ import getAllTeamsWhoWonMatchAndToss from "./src/server/5-find-number-of-times-t
 import getHighestNumberPOTMAwardForSeason from "./src/server/6-find-player-who-won-highest-number-POTM-awards-each-season.js";
 
 import getStrikeRateOfBatsmanBySeason from "./src/server/7-find-strike-rate-of-a-batsman-each-season.js";
+import getHighestNumberOfTimesDismissedPlayers from "./src/server/8-maximum-times-player-dismissed-by-a-bowler.js";
 
 // Collecting all data
 const getNoOfMatchesPlayedByTeamInAllSeasons =
@@ -32,6 +33,9 @@ const strikeRateOfBatsmanBySeason = getStrikeRateOfBatsmanBySeason(
   deliveries
 );
 
+const highestNumberOfTimesDismissedPlayers =
+  getHighestNumberOfTimesDismissedPlayers(deliveries);
+
 // Writing all data
 writeFile(getNoOfMatchesPlayedByTeamInAllSeasons, "1-matches-per-year.json");
 writeFile(wonMatches, "2-matches-won-per-team-per-year.json");
@@ -48,4 +52,8 @@ writeFile(
 writeFile(
   strikeRateOfBatsmanBySeason,
   "7-find-strike-rate-of-a-batsman-each-season.json"
+);
+writeFile(
+  highestNumberOfTimesDismissedPlayers,
+  "8-maximum-times-player-dismissed-by-a-bowler.json"
 );

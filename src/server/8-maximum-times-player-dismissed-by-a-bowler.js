@@ -1,20 +1,20 @@
-import { readFile, writeFile } from "./helper.js";
-
 // Find the highest number of times one player has been dismissed by another player
-const findHighestNumberDismissed = (deliveries) => {
-  let dismissedResult = deliveries.reduce(
-    (result, { batsman, bowler, dismissal_kind }) => {
-      if (dismissal_kind) {
-        if (!result[bowler]) result[bowler] = {};
-        if (!result[bowler][batsman]) result[bowler][batsman] = 0;
-        result[bowler][batsman]++;
-      }
+const getHighestNumberOfTimesDismissedPlayers = (deliveries) => {
+  const dismissalStats = getDismissedResult(deliveries);
+  return findMostDismissedPlayer(dismissalStats);
+};
 
-      return result;
-    },
-    {}
-  );
+const getDismissedResult = (deliveries) => {
+  return deliveries.reduce((result, { batsman, bowler, dismissal_kind }) => {
+    if (dismissal_kind) {
+      result[bowler] = result[bowler] || {};
+      result[bowler][batsman] = (result[bowler][batsman] || 0) + 1;
+    }
+    return result;
+  }, {});
+};
 
+const findMostDismissedPlayer = (dismissedResult) => {
   let highestNumOfDismissedPlayer = "";
   let dismissedTimes = 0;
 
@@ -27,19 +27,10 @@ const findHighestNumberDismissed = (deliveries) => {
     });
   });
 
-  let result = {
+  return {
     player: highestNumOfDismissedPlayer,
     count: dismissedTimes,
   };
-
-  writeFile(result, "8-maximum-times-player-dismissed-by-a-bowler.json");
 };
 
-readFile("../data/deliveries.json", (err, deliveries) => {
-  if (err) {
-    console.error("Error reading deliveries.json", err);
-    return;
-  }
-
-  findHighestNumberDismissed(deliveries);
-});
+export default getHighestNumberOfTimesDismissedPlayers;
