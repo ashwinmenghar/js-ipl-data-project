@@ -1,16 +1,31 @@
 import csv from "csv-parser";
 import fs from "fs";
 
-function convertCsvToJson(csvFilePath, newFile) {
-  const results = [];
-  fs.createReadStream(csvFilePath)
-    .pipe(csv())
-    .on("data", (data) => results.push(data))
-    .on("end", () => {
-      fs.writeFileSync(newFile, JSON.stringify(results, null, 2));
-      console.log("Import Successfully");
-    });
-}
+const convertCsvToJson = (csvFilePath) => {
+  return new Promise((resolve, reject) => {
+    const results = [];
+    fs.createReadStream(csvFilePath)
+      .pipe(csv())
+      .on("data", (data) => results.push(data))
+      .on("end", () => {
+        console.log("Import Successfully");
+        resolve(results);
+      })
+      .on("error", (error) => reject(error));
+  });
+};
+let deliveries = [];
+let matches = [];
 
-convertCsvToJson("deliveries.csv", "./deliveries.json");
-convertCsvToJson("matches.csv", "./matches.json");
+const loadData = async () => {
+  try {
+    deliveries = await convertCsvToJson("src/data/deliveries.csv");
+    matches = await convertCsvToJson("src/data/matches.csv");
+  } catch (error) {
+    console.error("Failed to load data:", error);
+  }
+};
+
+await loadData();
+
+export { deliveries, matches };

@@ -1,7 +1,5 @@
-import { readFile, writeFile } from "./src/server/helper.js";
-
-const matches = readFile("src/data/matches.json");
-const deliveries = readFile("src/data/deliveries.json");
+import { writeFile } from "./src/server/helper.js";
+import { deliveries, matches } from "./src/data/convertCsvToJson.js";
 
 import getNumberOfMatchesPlayed from "./src/server/1-matches-per-year.js";
 import getAllIPLWonMatchesForSeason from "./src/server/2-matches-won-per-team-per-year.js";
