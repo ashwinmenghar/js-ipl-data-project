@@ -2,27 +2,23 @@
 const getStrikeRateOfBatsmanBySeason = (matches, deliveries) => {
   const matchSeasonMap = getAllMatchIdInSeason(matches);
 
-  const batsmanStats = deliveries.reduce((result, delivery) => {
-    let season = matchSeasonMap.get(delivery.match_id);
-    if (!season) return result;
+  const batsmanStats = {};
 
-    const batsman = delivery.batsman;
-    const batsman_runs = Number(delivery.batsman_runs);
-    const wideRuns = Number(delivery.wide_runs);
+  for (const { match_id, batsman_runs, batsman, wide_runs } of deliveries) {
+    let season = matchSeasonMap.get(match_id);
+    if (!season) continue;
 
-    if (!result[season]) {
-      result[season] = {};
+    if (!batsmanStats[season]) {
+      batsmanStats[season] = {};
     }
 
-    if (!result[season][batsman]) {
-      result[season][batsman] = { balls: 0, runs: 0 };
+    if (!batsmanStats[season][batsman]) {
+      batsmanStats[season][batsman] = { balls: 0, runs: 0 };
     }
 
-    if (wideRuns === 0) result[season][batsman].balls++;
-    result[season][batsman].runs += batsman_runs;
-
-    return result;
-  }, {});
+    if (wide_runs === "0") batsmanStats[season][batsman].balls++;
+    batsmanStats[season][batsman].runs += Number(batsman_runs);
+  }
 
   return calculateStrikeRates(batsmanStats);
 };
@@ -32,20 +28,19 @@ const getAllMatchIdInSeason = (matches) => {
 };
 
 const calculateStrikeRates = (batsmanStats) => {
-  return Object.entries(batsmanStats).reduce(
-    (yearsWithPlayerStats, [season, seasonStats]) => {
-      yearsWithPlayerStats[season] = Object.entries(seasonStats).reduce(
-        (allPlayerStats, [batsman, { balls, runs }]) => {
-          let strikeRate = (runs / balls) * 100;
-          allPlayerStats[batsman] = strikeRate.toFixed(2);
-          return allPlayerStats;
-        },
-        {}
-      );
-      return yearsWithPlayerStats;
-    },
-    {}
-  );
+  let yearsWithPlayerStats = {};
+
+  for (let [season, seasonStats] of Object.entries(batsmanStats)) {
+    let allPlayerStats = {};
+
+    for (let [batsman, { balls, runs }] of Object.entries(seasonStats)) {
+      let strikeRate = (runs / balls) * 100;
+      allPlayerStats[batsman] = strikeRate.toFixed(2);
+    }
+    yearsWithPlayerStats[season] = allPlayerStats;
+  }
+
+  return yearsWithPlayerStats;
 };
 
 export default getStrikeRateOfBatsmanBySeason;
