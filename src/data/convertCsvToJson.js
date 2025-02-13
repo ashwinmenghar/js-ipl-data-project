@@ -3,6 +3,10 @@ import fs from "fs";
 
 const convertCsvToJson = (csvFilePath) => {
   return new Promise((resolve, reject) => {
+    if (!fs.existsSync(csvFilePath)) {
+      return reject(new Error(`File not found: ${csvFilePath}`));
+    }
+
     const results = [];
     fs.createReadStream(csvFilePath)
       .pipe(csv())
@@ -22,7 +26,7 @@ const loadData = async () => {
     deliveries = await convertCsvToJson("src/data/deliveries.csv");
     matches = await convertCsvToJson("src/data/matches.csv");
   } catch (error) {
-    console.error("Failed to load data:", error);
+    console.error(error.message);
   }
 };
 
