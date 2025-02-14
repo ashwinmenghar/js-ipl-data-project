@@ -40,9 +40,13 @@ const calculateBowlersEconomy = (bowlersArr) => {
 };
 
 const convertToEconomyMap = (bowlersArr) => {
-  return Object.fromEntries(
-    bowlersArr.map(({ bowler, economy }) => [bowler, economy.toFixed(2)])
-  );
+  const economyMap = {};
+  for (let i = 0; i < bowlersArr.length; i++) {
+    const bowler = bowlersArr[i].bowler;
+    const economy = bowlersArr[i].economy.toFixed(2);
+    economyMap[bowler] = economy;
+  }
+  return economyMap;
 };
 
 export default getTop10EconomicalBowlers;

@@ -24,7 +24,12 @@ const getStrikeRateOfBatsmanBySeason = (matches, deliveries) => {
 };
 
 const getAllMatchIdInSeason = (matches) => {
-  return new Map(matches.map(({ id, season }) => [id, season]));
+  const matchMap = new Map();
+  for (let i = 0; i < matches.length; i++) {
+    const { id, season } = matches[i];
+    matchMap.set(id, season);
+  }
+  return matchMap;
 };
 
 const calculateStrikeRates = (batsmanStats) => {
